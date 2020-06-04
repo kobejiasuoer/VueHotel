@@ -51,7 +51,7 @@
           },
           {
             min:3,
-            max:10,
+            max:13,
             message:"用户名长度在3到10个字符",
             trigger: "blur"
           }
@@ -84,15 +84,22 @@
               password,username
             }).then(
               function (response) {
-            if(response.data === 200){
-              that.$router.push("/home");
-            }else {
+
+            if(response.data === 400){
               that.$message({
                 showClose: true,
                 message: '登录失败，用户名或密码错误！',
                 type: 'error'
               });
 
+            }else {
+
+              //response.data是token。
+              //接受后端发送过来的token。存至本地。
+              localStorage.token = response.data;
+              console.log(localStorage.token)
+
+              that.$router.push("/home");
             }
               }
             )
@@ -107,10 +114,10 @@
         });
       },
       goRegister() {
-
+        this.$router.push("/register")
       },
       goModifyPwd() {
-
+        this.$router.push("/forget")
       }
     }
   }

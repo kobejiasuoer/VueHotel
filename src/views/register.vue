@@ -34,6 +34,9 @@
   </div>
 </template>
 <script>
+
+  import {Encrypt} from '../utils/AESutils'
+
   export default {
     name: "Register",
     data() {
@@ -95,6 +98,7 @@
       }
     },
     methods: {
+
       // <!--发送验证码-->
       sendCode () {
         let tel = this.ruleForm2.tel
@@ -104,6 +108,19 @@
           this.buttonText = '已发送'
           this.isDisabled = true
           if (this.flag) {
+
+            this.$http.post("http://localhost:8181/Login/smsresgister",{
+              tel
+            }).then(
+             function (response) {
+              localStorage.code = response.data;
+             }
+
+            ).catch(
+
+            )
+
+
             this.flag = false;
             let timer = setInterval(() => {
               time--;
@@ -120,11 +137,52 @@
       },
       // <!--提交注册-->
       submitForm(formName) {
+
+        const tel = this.ruleForm2.tel;
+        const password = Encrypt(this.ruleForm2.checkPass);
+
+        const that = this;
         this.$refs[formName].validate(valid => {
+
           if (valid) {
-            setTimeout(() => {
-              alert('注册成功')
-            }, 400);
+            if(this.ruleForm2.smscode === localStorage.code){
+
+
+              //向后端发送请求
+              this.$http.post("http://localhost:8181/Login/register",{
+                tel,password
+              }).then(
+                function (response) {
+                  if (response.data === 200){
+                    that.$message({
+                      message: '恭喜你，注册成功！',
+                      type: 'success'
+                    });
+
+                    setTimeout(() => {
+                      that.$router.push({
+                        path: "/login"
+                      });
+                    }, 1000);
+
+                  }
+                }
+
+              ).catch(
+                function (error) {
+                    console.log(error);
+                }
+              )
+
+
+
+            }else {
+              that.$message({
+                showClose: true,
+                message: '验证码不正确！',
+                type: 'error'
+              });
+            }
           } else {
             console.log("error submit!!");
             return false;

@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '../views/login'
-import Home from '../views/home'
-import Register from '../views/register'
+
+const Login = ()=> import('../views/login')
+const Home = ()=> import(`../views/home`)
+const Register = () => import('../views/register')
+const Forget = () => import('../views/forget')
 
 Vue.use(Router)
 
@@ -18,9 +20,20 @@ export default new Router({
       component: Login
     },
     {
+      path: '/home',
+      name: 'Home',
+      component: Home
+    },
+    {
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/forget',
+      name: 'Forget',
+      component: Forget
     }
-  ]
+  ],
+  mode:'history'
 })

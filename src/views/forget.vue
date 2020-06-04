@@ -1,10 +1,10 @@
 <template>
-  <h2>首页</h2>
+    <h3>忘记密码！</h3>
 </template>
 
 <script>
   export default {
-    name: 'home'
+    name: 'forget'
   }
 </script>
 
